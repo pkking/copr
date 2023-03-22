@@ -49,8 +49,10 @@ BuildRequires: %{python_pfx}-jinja2
 BuildRequires: %{python_pfx}-simplejson
 BuildRequires: %{python}-backoff
 
-%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?openEuler}
+%if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires: argparse-manpage
+%elif 0%{?openEuler}
+BuildRequires: python3-argparse-manpage
 %endif
 BuildRequires: python-rpm-macros
 
