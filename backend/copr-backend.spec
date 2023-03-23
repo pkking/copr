@@ -21,6 +21,7 @@ URL:        https://github.com/fedora-copr/copr
 # tito build --tgz --tag %%name-%%version-%%release
 Source0:    %{name}-%{version}.tar.gz
 Source1:    https://github.com/fedora-copr/%{tests_tar}/archive/v%{tests_version}/%{tests_tar}-%{tests_version}.tar.gz
+Patch0:     copr_messaging.patch  
 
 BuildArch:  noarch
 BuildRequires: asciidoc
@@ -38,11 +39,13 @@ BuildRequires: python3-setuptools
 
 BuildRequires: python3-copr
 BuildRequires: python3-copr-common >= %copr_common_version
-BuildRequires: python3-copr-messaging
 BuildRequires: python3-daemon
 BuildRequires: python3-dateutil
 BuildRequires: python3-distro
+%if !0%{?openEuler}
 BuildRequires: python3-fedmsg
+BuildRequires: python3-copr-messaging
+%endif
 BuildRequires: python3-filelock
 BuildRequires: python3-gobject
 BuildRequires: python3-httpretty
@@ -77,10 +80,12 @@ Requires:   openssh-clients
 Requires:   prunerepo >= %prunerepo_version
 Requires:   python3-copr
 Requires:   python3-copr-common >= %copr_common_version
-Requires:   python3-copr-messaging
 Requires:   python3-daemon
 Requires:   python3-dateutil
+%if !0%{?openEuler}
 Requires:   python3-fedmsg
+Requires:   python3-copr-messaging
+%endif
 Requires:   python3-filelock
 Requires:   python3-gobject
 Requires:   python3-humanize
@@ -126,6 +131,7 @@ only.
 
 %prep
 %setup -q -a 1
+%patch -P0 -p2
 
 
 %build
@@ -182,9 +188,9 @@ cp -a conf/logstash/copr_backend.conf %{buildroot}%{_pkgdocdir}/examples/%{_sysc
 
 cp -a docs/build/html %{buildroot}%{_pkgdocdir}/
 
-
-%check
-./run_tests.sh -vv --no-cov
+# check need non-root user
+#%check
+#./run_tests.sh -vv --no-cov
 
 %pre
 getent group copr >/dev/null || groupadd -r copr

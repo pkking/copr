@@ -86,7 +86,7 @@ BuildRequires: python3-dateutil
 BuildRequires: python3-decorator
 BuildRequires: python3-flask
 BuildRequires: python3-templated-dictionary
-%if 0%{?fedora} >= 31
+%if 0%{?fedora} >= 31 || 0%{?openEuler}
 BuildRequires: python3-flask-caching
 %else
 BuildRequires: python3-flask-cache
@@ -143,7 +143,7 @@ Requires: python3-copr-common >= %copr_common_version
 Requires: python3-dateutil
 Requires: python3-email-validator
 Requires: python3-flask
-%if 0%{?fedora} >= 31
+%if 0%{?fedora} >= 31 || 0%{?openEuler}
 Requires: python3-flask-caching
 %else
 Requires: python3-flask-cache
