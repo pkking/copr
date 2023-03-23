@@ -1,4 +1,4 @@
-%if 0%{?rhel} > 7 || 0%{?fedora}
+%if 0%{?rhel} > 7 || 0%{?fedora} || 0%{?openEuler}
 %global __python %_bindir/python3
 %global with_python3 1
 %else
