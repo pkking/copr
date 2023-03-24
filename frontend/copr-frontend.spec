@@ -73,7 +73,9 @@ BuildRequires: graphviz
 BuildRequires: python3-devel
 
 %if %{with check}
+%if !0%{?openEuler}
 BuildRequires: fedora-messaging
+%endif
 BuildRequires: python3-alembic
 BuildRequires: python3-anytree
 BuildRequires: python3-click
@@ -132,7 +134,9 @@ Requires: redis
 Requires: %flavor_guard
 
 Requires: (copr-selinux if selinux-policy-targeted)
+%if !0%{?openEuler}
 Requires: fedora-messaging
+%endif
 Requires: js-jquery
 Requires: python3-anytree
 Requires: python3-click
