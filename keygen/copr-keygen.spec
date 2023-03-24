@@ -171,9 +171,10 @@ systemctl condrestart httpd &>/dev/null || :
 %ghost %{_localstatedir}/log/copr-keygen/main.log
 
 
+%if 0%{?fedora}
 %files -n copr-keygen-doc
 %doc %{_pkgdocdir}
-
+%endif
 
 %changelog
 * Tue Jan 24 2023 Jakub Kadlcik <frostyx@email.cz> 1.88-1
