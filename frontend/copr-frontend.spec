@@ -1,5 +1,5 @@
 %bcond_without check
-%if 0%{?fedora} < 32
+%if 0%{?fedora} < 32 && !0%{?openEuler}
 %bcond_without doc
 %endif
 
@@ -79,7 +79,11 @@ BuildRequires: fedora-messaging
 BuildRequires: python3-alembic
 BuildRequires: python3-anytree
 BuildRequires: python3-click
+%if 0%{?openEuler}
+BuildRequires: python3-commonmark
+%else
 BuildRequires: python3-CommonMark
+%endif
 BuildRequires: python3-blinker
 BuildRequires: python3-beautifulsoup4
 BuildRequires: python3-copr-common >= %copr_common_version
@@ -88,15 +92,29 @@ BuildRequires: python3-dateutil
 BuildRequires: python3-decorator
 BuildRequires: python3-flask
 BuildRequires: python3-templated-dictionary
-%if 0%{?fedora} >= 31 || 0%{?openEuler}
+%if 0%{?fedora} >= 31
 BuildRequires: python3-flask-caching
+%elif 0%{?openEuler}
+BuildRequires: python3-Flask-Caching
 %else
 BuildRequires: python3-flask-cache
 %endif
+%if 0%{?openEuler}
+BuildRequires: python3-Flask-OpenID
+BuildRequires: python3-Flask-SQLAlchemy
+BuildRequires: python3-SQLAlchemy-Utils
+BuildRequires: python3-pyLibravatar
+BuildRequires: python3-WTForms >= 2.2.1
+BuildRequires: python3-Flask-WTF
+%else
 BuildRequires: python3-flask-openid
 BuildRequires: python3-flask-sqlalchemy
-BuildRequires: python3-flask-whooshee
+BuildRequires: python3-sqlalchemy-utils
+BuildRequires: python3-pylibravatar
+BuildRequires: python3-wtforms >= 2.2.1
 BuildRequires: python3-flask-wtf
+%endif
+BuildRequires: python3-flask-whooshee
 BuildRequires: python3-gobject
 BuildRequires: python3-html2text
 BuildRequires: python3-html5-parser
@@ -107,16 +125,13 @@ BuildRequires: python3-munch
 BuildRequires: python3-netaddr
 BuildRequires: python3-openid-teams
 BuildRequires: python3-pygments
-BuildRequires: python3-pylibravatar
 BuildRequires: python3-pytest
 BuildRequires: python3-pytz
 BuildRequires: python3-redis
 BuildRequires: python3-requests
 BuildRequires: python3-sphinx
 BuildRequires: python3-sphinxcontrib-httpdomain
-BuildRequires: python3-sqlalchemy-utils
 BuildRequires: python3-whoosh
-BuildRequires: python3-wtforms >= 2.2.1
 BuildRequires: python3-ldap
 BuildRequires: python3-yaml
 BuildRequires: python3-backoff
@@ -152,11 +167,22 @@ Requires: python3-flask-caching
 %else
 Requires: python3-flask-cache
 %endif
+%if 0%{?openEuler}
+Requires: python3-Flask-OpenID
+Requires: python3-Flask-SQLAlchemy
+Requires: python3-SQLAlchemy-Utils
+Requires: python3-pyLibravatar
+Requires: python3-WTForms >= 2.2.1
+Requires: python3-Flask-WTF
+%else
 Requires: python3-flask-openid
 Requires: python3-flask-sqlalchemy
+Requires: python3-sqlalchemy-utils
+Requires: python3-pylibravatar
+Requires: python3-wtforms >= 2.2.1
+Requires: python3-flask-wtf
+%endif
 Requires: python3-flask-whooshee
-Requires: python3-flask-wtf
-Requires: python3-flask-wtf
 Requires: python3-gobject
 Requires: python3-html2text
 Requires: python3-html5-parser
@@ -169,13 +195,10 @@ Requires: python3-netaddr
 Requires: python3-openid-teams
 Requires: python3-psycopg2
 Requires: python3-pygments
-Requires: python3-pylibravatar
 Requires: python3-pytz
 Requires: python3-redis
 Requires: python3-requests
-Requires: python3-sqlalchemy-utils
 Requires: python3-templated-dictionary
-Requires: python3-wtforms >= 2.2.1
 Requires: python3-zmq
 Requires: python3-ldap
 Requires: python3-backoff
