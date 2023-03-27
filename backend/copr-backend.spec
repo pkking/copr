@@ -37,8 +37,6 @@ BuildRequires: python3-devel
 BuildRequires: python3-setuptools
 
 BuildRequires: python3-copr
-BuildRequires: python3-copr-common >= %copr_common_version
-BuildRequires: python3-copr-messaging
 BuildRequires: python3-daemon
 BuildRequires: python3-dateutil
 BuildRequires: python3-distro
