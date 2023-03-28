@@ -189,8 +189,8 @@ cp -a conf/logstash/copr_backend.conf %{buildroot}%{_pkgdocdir}/examples/%{_sysc
 cp -a docs/build/html %{buildroot}%{_pkgdocdir}/
 
 # check need non-root user
-#%check
-#./run_tests.sh -vv --no-cov
+%check
+./run_tests.sh -vv --no-cov
 
 %pre
 getent group copr >/dev/null || groupadd -r copr
