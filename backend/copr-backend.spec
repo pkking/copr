@@ -85,6 +85,7 @@ Requires:   python3-dateutil
 %if !0%{?openEuler}
 Requires:   python3-fedmsg
 Requires:   python3-copr-messaging
+Requires:   python3-novaclient
 %endif
 Requires:   python3-filelock
 Requires:   python3-gobject
@@ -92,7 +93,6 @@ Requires:   python3-humanize
 Requires:   python3-jinja2
 Requires:   python3-munch
 Requires:   python3-netaddr
-Requires:   python3-novaclient
 Requires:   python3-packaging
 Requires:   python3-pytz
 Requires:   python3-requests
