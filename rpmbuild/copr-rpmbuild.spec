@@ -1,4 +1,4 @@
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?openEuler}
 %global __python        %__python3
 %global python          python3
 %global python_pfx      python3
@@ -51,6 +51,8 @@ BuildRequires: python3-backoff >= 1.9.0
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires: argparse-manpage
+%elif 0%{?openEuler}
+BuildRequires: python3-argparse-manpage
 %endif
 BuildRequires: python-rpm-macros
 
@@ -73,7 +75,9 @@ Requires: git
 Requires: git-svn
 # for the /bin/unbuffer binary
 Requires: expect
+%if !0%{?openEuler}
 Requires: qemu-user-static
+%endif
 Requires: sed
 
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -103,7 +107,7 @@ Requires: dnf-yum
 Requires: dnf-utils
 %endif
 # selinux toolset to allow running ansible against the builder
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?openEuler}
 Requires: python3-libselinux
 Requires: python3-libsemanage
 %else
@@ -114,21 +118,25 @@ Requires: libsemanage-python
 Requires: nosync
 %ifarch x86_64
 # multilib counterpart to avoid: config_opts['nosync_force'] = True
+%if !0%{?openEuler}
 Requires: nosync(x86-32)
+%endif
 %endif
 Requires: openssh-clients
 Requires: podman
+%if !0%{?openEuler}
 Requires: pyp2rpm
 Requires: pyp2spec
+Requires: rubygem-gem2rpm
+Requires: scl-utils-build
+Requires: fedora-review >= 0.8
+Requires: fedora-review-plugin-java
+%endif
 # We need %%pypi_source defined, which is in 3-29+
 Requires: python-srpm-macros >= 3-29
 Requires: rpkg
 Requires: rsync
-Requires: rubygem-gem2rpm
-Requires: scl-utils-build
 Requires: tito
-Requires: fedora-review >= 0.8
-Requires: fedora-review-plugin-java
 # yum* to allow mock to build against el* chroots without bootstrap_container
 %if 0%{?rhel}
 Requires: yum
@@ -138,7 +146,7 @@ Requires: yum-utils
 # We want those to be always up-2-date
 %latest_requires ca-certificates
 %latest_requires distribution-gpg-keys
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?openEuler}
 
 %if 0%{?fedora} >= 38
 %latest_requires dnf5
@@ -153,11 +161,12 @@ Requires: yum-utils
 %endif
 %latest_requires mock
 %latest_requires mock-core-configs
+%if !0%{?openEuler}
 %latest_requires redhat-rpm-config
+%else
+%latest_requires openEuler-rpm-config
+%endif
 %latest_requires rpm
-
-# Outdated gem2rpm version may have problems with fetching from rubygems.org
-%latest_requires rubygem-gem2rpm
 
 
 %description -n copr-builder
@@ -282,7 +291,7 @@ install -p -m 755 copr-update-builder %buildroot%_bindir
 )
 
 install -p -m 755 bin/copr-distgit-client %buildroot%_bindir
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?openEuler}
 argparse-manpage --pyfile copr_distgit_client.py \
     --function _get_argparser \
     --author "Copr Team" \
@@ -330,7 +339,7 @@ install -p -m 644 copr_distgit_client.py %{buildroot}%{expand:%%%{python}_siteli
 %files -n copr-distgit-client
 %license LICENSE
 %_bindir/copr-distgit-client
-%if 0%{?fedora} || 0%{?rhel} > 7
+%if 0%{?fedora} || 0%{?rhel} > 7 || 0%{?openEuler}
 %_mandir/man1/copr-distgit-client.1*
 %endif
 %dir %_sysconfdir/copr-distgit-client
