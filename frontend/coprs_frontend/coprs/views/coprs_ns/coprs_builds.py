@@ -28,6 +28,7 @@ from coprs.exceptions import (
     ConflictingRequest,
     InsufficientRightsException,
     UnrepeatableBuildException,
+    InsufficientBuildQuota,
 )
 
 
@@ -101,13 +102,13 @@ def copr_builds(copr, page=1):
 @req_with_copr
 def copr_add_build(copr, form=None):
     return render_add_build(
-        copr, form, view='coprs_ns.copr_new_build')
+        copr, form, view='coprs_ns.copr_new_build_scm')
 
 
 def render_add_build(copr, form, view):
     if not form:
-        form = forms.BuildFormUrlFactory(copr.active_chroots)()
-    return flask.render_template("coprs/detail/add_build/url.html",
+        form = forms.BuildFormScmFactory(copr.active_chroots)()
+    return flask.render_template("coprs/detail/add_build/scm.html",
                                  copr=copr, view=view, form=form)
 
 
@@ -153,7 +154,7 @@ def process_new_build(copr, form, create_new_build_factory, add_function, add_vi
         try:
             create_new_build_factory(**build_options)
             db.session.commit()
-        except (ActionInProgressException, InsufficientRightsException, UnrepeatableBuildException, BadRequest) as e:
+        except (ActionInProgressException, InsufficientRightsException, InsufficientBuildQuota, UnrepeatableBuildException, BadRequest) as e:
             db.session.rollback()
             flask.flash(str(e), "error")
         else:

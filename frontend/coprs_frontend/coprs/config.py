@@ -177,6 +177,8 @@ class Config(object):
 
     PACKAGES_COUNT = False
 
+    BUILD_QUOTA = 0
+
 class ProductionConfig(Config):
     DEBUG = False
     # SECRET_KEY = "put_some_secret_here"

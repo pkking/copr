@@ -124,3 +124,6 @@ class NoPackageSourceException(Exception):
 
 class UnrepeatableBuildException(Exception):
     pass
+
+class InsufficientBuildQuota(Exception):
+    pass

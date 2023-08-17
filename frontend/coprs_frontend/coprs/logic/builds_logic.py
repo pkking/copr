@@ -1,3 +1,4 @@
+import datetime
 import tempfile
 import shutil
 import json
@@ -28,6 +29,7 @@ from coprs.exceptions import (
     ConflictingRequest,
     DuplicateException,
     InsufficientRightsException,
+    InsufficientBuildQuota,
     InsufficientStorage,
     MalformedArgumentException,
     UnrepeatableBuildException,
@@ -804,6 +806,8 @@ class BuildsLogic(object):
         users_logic.UsersLogic.raise_if_cant_build_in_copr(
             user, copr,
             "You don't have permissions to build in this copr.")
+        if BuildsLogic.is_out_of_quota(user):
+            raise InsufficientBuildQuota("Not enough build quota within today, please try tomorrow.")
 
         batch = cls._setup_batch(batch, after_build_id, with_build_id, user)
 
@@ -1284,6 +1288,29 @@ class BuildsLogic(object):
             return query.join(models.BuildChroot).filter(models.BuildChroot.ended_on.isnot(None))
         else:
             return query.join(models.BuildChroot).filter(models.BuildChroot.ended_on.is_(None))
+
+    @classmethod
+    def is_out_of_quota(cls, user):
+        if not user:
+            return False
+
+        quota = app.config["BUILD_QUOTA"]
+        builds_count = 0
+        if quota > 0:
+            current_date = datetime.date.today()
+            day_begin = int(time.mktime(datetime.datetime.combine(
+                current_date, datetime.datetime.min.time()).timetuple()))
+            day_end = int(time.mktime(datetime.datetime.combine(
+                current_date, datetime.datetime.max.time()).timetuple()))
+            builds_count = models.Build.query.filter(
+                models.Build.submitted_on >= day_begin, models.Build.submitted_on <= day_end, models.Build.user_id == user.id).count()
+            if builds_count > quota:
+                app.logger.warning(
+                    f"builds count: {builds_count} exceed limit:{quota}")
+                return True
+        app.logger.info(
+            f"builds count: {builds_count} not exceed limit:{quota}")
+        return False
 
     @classmethod
     def filter_by_group_name(cls, query, group_name):
